@@ -1,5 +1,7 @@
 # MeasurementViewer
 
+Viewer is [online](http://ustegrew.github.io/samples/angular/measurement-viewer/index.html).
+
 I needed to display some simulations for the CPU I/O circuit for the [fan controller](https://github.com/ustegrew/fan_controller) project. The purpose is immaterial, for me it was just an excuse to whip up an Angular application and learn best practices for Angular programming. Success? Dunno... Criticism welcome.
 
 I built the project using `ng build`; servable files are located in the `dist` sub directory. Best served up from a web server (loading into browser from local Storage didn't work for me).
