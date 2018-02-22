@@ -167,11 +167,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 var ImgviewComponent = /** @class */ (function () {
+    /* cTor. Subscribes to update notifications from the switch state service */
     function ImgviewComponent(fSwitchStates) {
         var _this = this;
         this.fSwitchStates = fSwitchStates;
+        /* Path to default image (hardcoded, eek!) */
         this.kDefaultPath = '/assets/img/dc-00000.png';
+        /* Path (front part) of the next-to-load image */
         this.kHead = '/assets/img/dc-';
+        /* Path (front part) of the next-to-load image */
         this.kTail = '.png';
         this.fSwitchStates.fNotifier.subscribe(function (note) {
             _this._notifyChange();
@@ -180,6 +184,9 @@ var ImgviewComponent = /** @class */ (function () {
     ImgviewComponent.prototype.ngOnInit = function () {
         this.fPath = this.kDefaultPath;
     };
+    /**
+     * Update actor, when a resistor is switched on/off
+     */
     ImgviewComponent.prototype._notifyChange = function () {
         var n;
         var i;
@@ -195,8 +202,10 @@ var ImgviewComponent = /** @class */ (function () {
             p += this.kTail;
         }
         else {
+            /* Oops no switches defined. Just keep default path. */
             p = this.kDefaultPath;
         }
+        /* Will reload associated image DOM node. */
         this.fPath = p;
     };
     ImgviewComponent = __decorate([
@@ -204,7 +213,13 @@ var ImgviewComponent = /** @class */ (function () {
             selector: 'app-imgview',
             template: __webpack_require__("../../../../../src/app/components/imgview/imgview.component.html"),
             styles: [__webpack_require__("../../../../../src/app/components/imgview/imgview.component.css")]
-        }),
+        })
+        /**
+         * An image loader. Loads the image (= simulation schematics)
+         * corresponding to the current switch settings,
+         * showing it in the associated image DOM node.
+         */
+        ,
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__service_switchstates_switchstates_service__["a" /* SwitchstatesService */]])
     ], ImgviewComponent);
     return ImgviewComponent;
@@ -258,12 +273,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 var SwitchbankComponent = /** @class */ (function () {
+    /* cTor. Sets reference to global switch state service */
     function SwitchbankComponent(fSwitchStates) {
         this.fSwitchStates = fSwitchStates;
     }
     SwitchbankComponent.prototype.ngOnInit = function () {
         this.fR = [false, false, false, false, false];
     };
+    /* Updates switch positions */
     SwitchbankComponent.prototype.update = function (i) {
         this.fSwitchStates.setState(this.fR[i], i);
     };
@@ -272,7 +289,11 @@ var SwitchbankComponent = /** @class */ (function () {
             selector: 'app-switchbank',
             template: __webpack_require__("../../../../../src/app/components/switchbank/switchbank.component.html"),
             styles: [__webpack_require__("../../../../../src/app/components/switchbank/switchbank.component.css")]
-        }),
+        })
+        /**
+         * Bank of switches that make or break certain links in the simulated circuit.
+         */
+        ,
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__service_switchstates_switchstates_service__["a" /* SwitchstatesService */]])
     ], SwitchbankComponent);
     return SwitchbankComponent;
@@ -302,6 +323,9 @@ var Notification = /** @class */ (function () {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Switchbank; });
+/**
+ * Switch states, data model
+ */
 var Switchbank = /** @class */ (function () {
     function Switchbank() {
         this.fR = [
@@ -341,12 +365,23 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+/**
+ * Global switch state service. Receives switch change updates
+ * and notifies interested parties about each change.
+ */
 var SwitchstatesService = /** @class */ (function () {
     function SwitchstatesService() {
         this.fSwitches = new __WEBPACK_IMPORTED_MODULE_2__switchbank__["a" /* Switchbank */]();
         this.fNotifications = new __WEBPACK_IMPORTED_MODULE_1_rxjs_Subject__["a" /* Subject */]();
         this.fNotifier = this.fNotifications.asObservable();
     }
+    /**
+     * Sets the state of the given switch to ON (true) or OFF (false).
+     *
+     * @param   state       The switch state. <code>true</code> for ON and
+     *                      <code>false</code> for OFF.
+     * @param   i           Zero based index to the corresponding switch record.
+     */
     SwitchstatesService.prototype.setState = function (state, i) {
         var notification;
         this._assertIndex(i);
@@ -354,13 +389,25 @@ var SwitchstatesService = /** @class */ (function () {
         notification = new __WEBPACK_IMPORTED_MODULE_3__notification__["a" /* Notification */]();
         this.fNotifications.next(notification);
     };
+    /**
+     * @return        The number of switches available.
+     */
     SwitchstatesService.prototype.getNumStates = function () {
         return this.fSwitches.fR.length;
     };
+    /**
+     * Returns the state of the given switch.
+     *
+     * @param         i       Zero based index to the corresponding switch record.
+     * @return        State of switch <code>i</code>
+     */
     SwitchstatesService.prototype.getState = function (i) {
         this._assertIndex(i);
         return this.fSwitches.fR[i];
     };
+    /**
+     * Throws an exception if the given switch index is out of bounds.
+     */
     SwitchstatesService.prototype._assertIndex = function (i) {
         var n;
         n = this.fSwitches.fR.length;
@@ -378,6 +425,16 @@ var SwitchstatesService = /** @class */ (function () {
     return SwitchstatesService;
 }());
 
+/*
+[1]   According to some official guide I was advised to
+          import { Observable   } from 'rxjs';
+      this produces a TSLint warning: "This import is blacklisted, import a submodule instead"
+      When searching, I got this hint (https://github.com/angular/angular/issues/20349)
+          You shouldn't import from 'rxjs' or 'rxjs/Rx' since either import will
+          import the whole of rxjs which will dramatically increase the size of your
+          bundle. This should be changed in the docs to import { Observable } from
+          'rxjs/Observable ';
+*/
 
 
 /***/ }),

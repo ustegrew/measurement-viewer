@@ -2,7 +2,7 @@ import { Injectable   } from '@angular/core';
 import { Subject      } from 'rxjs/Subject';
 import { Switchbank   } from './switchbank';
 import { Notification } from './notification';
-import { Observable   } from 'rxjs';
+import { Observable   } from 'rxjs/Observable'; /* [1] */
 
 /**
  * Global switch state service. Receives switch change updates 
@@ -83,3 +83,14 @@ export class SwitchstatesService
       }
   }
 }
+
+/*
+[1]   According to some official guide I was advised to
+          import { Observable   } from 'rxjs';
+      this produces a TSLint warning: "This import is blacklisted, import a submodule instead"
+      When searching, I got this hint (https://github.com/angular/angular/issues/20349)
+          You shouldn't import from 'rxjs' or 'rxjs/Rx' since either import will 
+          import the whole of rxjs which will dramatically increase the size of your 
+          bundle. This should be changed in the docs to import { Observable } from 
+          'rxjs/Observable '; 
+*/
