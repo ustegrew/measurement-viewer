@@ -1,0 +1,1 @@
+Global service to keep the states of the switches and send update notifications.

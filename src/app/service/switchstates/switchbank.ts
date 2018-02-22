@@ -1,3 +1,6 @@
+/**
+ * Switch states, data model
+ */
 export class Switchbank 
 {
   fR: boolean[] =

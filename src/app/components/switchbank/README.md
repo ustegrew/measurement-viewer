@@ -1,0 +1,1 @@
+A bank of switches, to make/break certain connections in the simulated circuit. Each time a switch is operated we update the switch settings in the global switchstates service. The service will send notification to the image viewer to load the circuit diagram corresponding to the new switch settings.  

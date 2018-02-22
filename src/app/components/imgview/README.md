@@ -1,0 +1,1 @@
+A glorified image viewer. Receives notifications from the switch state service and loads the corresponding schematics into the associated image tag. 

@@ -4,12 +4,20 @@ import { Switchbank   } from './switchbank';
 import { Notification } from './notification';
 import { Observable   } from 'rxjs';
 
+/**
+ * Global switch state service. Receives switch change updates 
+ * and notifies interested parties about each change.
+ */
 @Injectable()
 export class SwitchstatesService 
 {
+  /* Notifier object. The channel via which we broadcast switch state channels. An RxJs Observable. */
   public  fNotifier           : Observable<Notification>;
   
+  /* The data model. */
   private fSwitches           : Switchbank;
+  
+  /* Access to notification API. Used by this service. */
   private fNotifications      : Subject<Notification>;
   
   constructor()
@@ -19,6 +27,13 @@ export class SwitchstatesService
       this.fNotifier      = this.fNotifications.asObservable ();
   }
   
+  /**
+   * Sets the state of the given switch to ON (true) or OFF (false).
+   * 
+   * @param   state       The switch state. <code>true</code> for ON and
+   *                      <code>false</code> for OFF.
+   * @param   i           Zero based index to the corresponding switch record.
+   */
   setState (state: boolean, i: number): void
   {
       let notification: Notification;
@@ -30,17 +45,29 @@ export class SwitchstatesService
       this.fNotifications.next (notification);
   }
   
+  /**
+   * @return        The number of switches available. 
+   */
   getNumStates(): number
   {
       return this.fSwitches.fR.length;
   }
   
+  /**
+   * Returns the state of the given switch.
+   * 
+   * @param         i       Zero based index to the corresponding switch record.
+   * @return        State of switch <code>i</code>
+   */
   getState (i: number): boolean
   {
       this._assertIndex (i);
       return this.fSwitches.fR [i];
   }
   
+  /**
+   * Throws an exception if the given switch index is out of bounds.
+   */
   private _assertIndex (i: number): void
   {
       let n: number;
